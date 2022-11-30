@@ -11,7 +11,7 @@ public class GameController {
 
     private final Map<String, GameObject> moveMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    private Random rand = new Random();
+    private final Random rand = new Random();
 
     public GameController() {
         // first char of enum values as map key - user needs to input only first char
@@ -26,7 +26,7 @@ public class GameController {
     }
 
     private GameObject getUserMove(char input) {
-        return moveMap.get(input);
+        return moveMap.get(String.valueOf(input));
     }
 
     private void prepareAndPlay() {
@@ -35,27 +35,44 @@ public class GameController {
         int numGames = sc.nextInt();
 
         while(numGames > 0){
-            System.out.println("R - Rock\nP - Paper\nS - Scissors\nEnter R, P or S:");
+            System.out.println("New game\nR - Rock\nP - Paper\nS - Scissors\nEnter R, P or S:");
             GameObject userMove = getUserMove(sc.next().charAt(0));
             if(userMove ==null)
                 System.out.println("Try again with valid input");
             else {
                 numGames--;
-                play(userMove);
+                int randIndex = rand.nextInt(moveMap.size());
+                GameObject systemMove = GameObject.values()[randIndex];
+                int result = play(userMove, systemMove);
+                printResults(result, userMove, systemMove);
             }
         }
-        System.out.println("Game over");
+        System.out.println("All games over");
     }
 
-    private void play(GameObject userMove) {
-        int randIndex = rand.nextInt(moveMap.size());
-        GameObject systemMove = GameObject.values()[randIndex - 1];
+    public int play(GameObject userMove, GameObject systemMove) {
+        int returnValue = Integer.MIN_VALUE;
         if(systemMove.equals(userMove))
-            System.out.println("Draw");
+            returnValue = 0;
         else if(userMove.defeats(systemMove))
-            System.out.println("User wins");
+            returnValue = 1;
         else
-            System.out.println("User loses");
+            returnValue = -1;
+        return returnValue;
+    }
 
+    private void printResults(int result, GameObject userMove, GameObject systemMove) {
+        System.out.println("User move: " + userMove);
+        System.out.println("System move: " + systemMove);
+        if(result == 0)
+            System.out.println("Draw");
+        else if(result == 1)
+            System.out.println("User wins");
+        else if(result == -1)
+            System.out.println("User loses");
+        else
+            System.out.println("Bad result");
+
+        System.out.println("--- game over ---\n");
     }
 }
