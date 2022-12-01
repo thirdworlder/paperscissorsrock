@@ -9,12 +9,13 @@ import java.util.TreeMap;
 
 public class GameController {
 
+    // make easy for user to play the game - user needs to input only first char to make a move
     private final Map<String, GameObject> moveMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     private final Random rand = new Random();
 
     public GameController() {
-        // first char of enum values as map key - user needs to input only first char
+        // first char of enum values as map key
         for(GameObject o : GameObject.values())
             moveMap.put(String.valueOf(o.toString().charAt(0)), o);
     }
@@ -25,6 +26,9 @@ public class GameController {
         gameController.prepareAndPlay();
     }
 
+    // translates input char to a move
+    // Example: r to ROCK
+    // Eaxmple: P to PAPER
     private GameObject getUserMove(char input) {
         return moveMap.get(String.valueOf(input));
     }
